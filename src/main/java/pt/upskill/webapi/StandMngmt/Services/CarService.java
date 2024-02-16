@@ -2,6 +2,7 @@ package pt.upskill.webapi.StandMngmt.Services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pt.upskill.webapi.StandMngmt.Enums.Status;
 import pt.upskill.webapi.StandMngmt.Models.Car;
 
 import java.util.List;
@@ -48,4 +49,16 @@ public class CarService {
         return null;
     }
 
+    public void deleteCar(long id) {
+        carRepository.deleteById(id);
+    }
+
+    public Car changeCarStatus(long id, Status status) {
+        Car car = carRepository.findById(id).orElse(null);
+        if (car != null) {
+            car.setStatus(status);
+            return carRepository.save(car);
+        }
+        return null;
+    }
 }

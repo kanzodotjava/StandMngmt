@@ -35,4 +35,8 @@ public class SellerService {
         }
         return null;
     }
+
+    public void deleteSeller(long id) {
+        sellerRepository.deleteById(id);
+    }
 }

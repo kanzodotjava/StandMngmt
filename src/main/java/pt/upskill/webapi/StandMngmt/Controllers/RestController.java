@@ -2,15 +2,20 @@ package pt.upskill.webapi.StandMngmt.Controllers;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pt.upskill.webapi.StandMngmt.Enums.Status;
 import pt.upskill.webapi.StandMngmt.Models.Car;
 import pt.upskill.webapi.StandMngmt.Models.Seller;
 import pt.upskill.webapi.StandMngmt.Services.CarService;
 import pt.upskill.webapi.StandMngmt.Services.SellerService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api")
@@ -22,34 +27,57 @@ public class RestController {
     private SellerService sellerService;
 
 
+
     @GetMapping("/cars")
-    public ResponseEntity<List<Car>> getAllCars() {
-        List<Car> cars = carService.getAllCars();
-        return new ResponseEntity<>(cars, HttpStatus.OK);
+    public ResponseEntity<CollectionModel<EntityModel<Car>>> getAllCars() {
+        List<EntityModel<Car>> cars = carService.getAllCars().stream()
+                .map(car -> EntityModel.of(car,
+                        Link.of("/api/car/" + car.getVIM()).withSelfRel()))
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(CollectionModel.of(cars,
+                Link.of("/api/cars").withSelfRel(),
+                Link.of("/api/cars").withRel("create-car")), HttpStatus.OK);
     }
 
     @GetMapping("/sellers")
-    public ResponseEntity<List<Seller>> getAllSellers() {
-        List<Seller> sellers = sellerService.getAllSellers();
-        return new ResponseEntity<>(sellers, HttpStatus.OK);
+    public ResponseEntity<CollectionModel<EntityModel<Seller>>> getAllSellers() {
+        List<EntityModel<Seller>> sellers = sellerService.getAllSellers().stream()
+                .map(seller -> EntityModel.of(seller,
+                        Link.of("/api/seller/" + seller.getId()).withSelfRel()))
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(CollectionModel.of(sellers,
+                Link.of("/api/sellers").withSelfRel(),
+                Link.of("/api/sellers").withRel("create-seller")), HttpStatus.OK);
     }
 
     @GetMapping("/car/{id}")
-    public ResponseEntity<Car> getCarById(@PathVariable long id) {
+    public ResponseEntity<EntityModel<Car>> getCarById(@PathVariable long id) {
         Car car = carService.getCarById(id);
         if (car == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(car, HttpStatus.OK);
+
+        EntityModel<Car> resource = EntityModel.of(car,
+                Link.of("/api/car/" + id).withSelfRel(),
+                Link.of("/api/car/" + id).withRel("update-car"),
+                Link.of("/api/car/" + id).withRel("delete-car"));
+        return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 
     @GetMapping("/seller/{id}")
-    public ResponseEntity<Seller> getSellerById(@PathVariable long id) {
+    public ResponseEntity<EntityModel<Seller>> getSellerById(@PathVariable long id) {
         Seller seller = sellerService.getSellerById(id);
         if (seller == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(seller, HttpStatus.OK);
+
+        EntityModel<Seller> resource = EntityModel.of(seller,
+                Link.of("/api/seller/" + id).withSelfRel(),
+                Link.of("/api/seller/" + id).withRel("update-seller"),
+                Link.of("/api/seller/" + id).withRel("delete-seller"));
+        return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 
     @PostMapping("/car")
@@ -64,17 +92,34 @@ public class RestController {
         return new ResponseEntity<>(createdSeller, HttpStatus.CREATED);
     }
 
-    //update seller by id
     @PutMapping("/seller/{id}")
     public ResponseEntity<Seller> updateSeller(@PathVariable long id, @RequestBody Seller seller) {
         Seller updatedSeller = sellerService.updateSeller(id, seller);
         return new ResponseEntity<>(updatedSeller, HttpStatus.OK);
     }
 
-    //update car by id
     @PutMapping("/car/{id}")
     public ResponseEntity<Car> updateCar(@PathVariable long id, @RequestBody Car car) {
         Car updatedCar = carService.updateCar(id, car);
+        return new ResponseEntity<>(updatedCar, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/car/{id}")
+    public ResponseEntity<String> deleteCar(@PathVariable long id) {
+        carService.deleteCar(id);
+        return new ResponseEntity<>("Car deleted successfully", HttpStatus.OK);
+    }
+
+    @DeleteMapping("/seller/{id}")
+    public ResponseEntity<String> deleteSeller(@PathVariable long id) {
+        sellerService.deleteSeller(id);
+        return new ResponseEntity<>("Seller deleted successfully", HttpStatus.OK);
+    }
+
+    //change car status by id
+    @PutMapping("/car/{id}/status")
+    public ResponseEntity<Car> changeCarStatus(@PathVariable long id, @RequestBody Status status) {
+        Car updatedCar = carService.changeCarStatus(id, status);
         return new ResponseEntity<>(updatedCar, HttpStatus.OK);
     }
 

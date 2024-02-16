@@ -2,6 +2,7 @@ package pt.upskill.webapi.StandMngmt.Models;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import pt.upskill.webapi.StandMngmt.Enums.Status;
 
 @Entity
 public class Car {
@@ -21,14 +22,15 @@ public class Car {
 
     private String color;
 
-    private String status;
-
     private String Type;
 
     @ManyToOne
     private Seller seller;
 
     private int numberOfDoors;
+
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.UNKNOWN;
 
     public Car() {
     }
@@ -66,7 +68,7 @@ public class Car {
         return color;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
@@ -115,7 +117,7 @@ public class Car {
         this.color = color;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

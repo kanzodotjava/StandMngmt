@@ -33,7 +33,6 @@ public class CarService {
     public Car updateCar(long VIM, Car updatedCar) {
         Car car = carRepository.findById(VIM).orElse(null);
         if (car != null) {
-            car.setBrand(updatedCar.getBrand());
             car.setModel(updatedCar.getModel());
             car.setLicensePlate(updatedCar.getLicensePlate());
             car.setNumberOfSeats(updatedCar.getNumberOfSeats());
@@ -60,5 +59,14 @@ public class CarService {
             return carRepository.save(car);
         }
         return null;
+    }
+
+    //get total of available cars (stock) (using enum Status)
+    public int getAvailableCars() {
+        return carRepository.countByStatus(Status.AVAILABLE);
+    }
+
+    public List<Car> getAllAvailableCars() {
+        return carRepository.findByStatus(Status.AVAILABLE);
     }
 }

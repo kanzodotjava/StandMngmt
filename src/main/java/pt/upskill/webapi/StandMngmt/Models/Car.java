@@ -10,8 +10,18 @@ public class Car {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private long VIM;
-    private String brand;
-    private String model;
+
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//
+//    private int IdClient;
+//
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//
+//    private long Id2;
+    @ManyToOne
+    private Model model;
     @Nullable
     private String licensePlate;
 
@@ -39,11 +49,8 @@ public class Car {
         return VIM;
     }
 
-    public String getBrand() {
-        return brand;
-    }
 
-    public String getModel() {
+    public Model getModel() {
         return model;
     }
 
@@ -89,11 +96,9 @@ public class Car {
         this.VIM = VIM;
     }
 
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
 
-    public void setModel(String model) {
+
+    public void setModel(Model model) {
         this.model = model;
     }
 

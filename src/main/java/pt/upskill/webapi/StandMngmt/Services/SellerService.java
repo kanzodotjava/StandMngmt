@@ -1,6 +1,7 @@
 package pt.upskill.webapi.StandMngmt.Services;
 
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pt.upskill.webapi.StandMngmt.Models.Car;
@@ -28,9 +29,15 @@ public class SellerService {
     public Seller updateSeller(long id, Seller updatedSeller) {
         Seller seller = sellerRepository.findById(id).orElse(null);
         if (seller != null) {
-            seller.setName(updatedSeller.getName());
-            seller.setPhoneNumber(updatedSeller.getPhoneNumber());
-            seller.setEmailAddress(updatedSeller.getEmailAddress());
+            if (updatedSeller.getName() != null) {
+                seller.setName(updatedSeller.getName());
+            }
+            if (updatedSeller.getEmailAddress() != null) {
+                seller.setEmailAddress(updatedSeller.getEmailAddress());
+            }
+            if (updatedSeller.getPhoneNumber() != 0) {
+                seller.setPhoneNumber(updatedSeller.getPhoneNumber());
+            }
             return sellerRepository.save(seller);
         }
         return null;

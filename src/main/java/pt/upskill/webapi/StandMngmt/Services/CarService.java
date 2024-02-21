@@ -2,7 +2,11 @@ package pt.upskill.webapi.StandMngmt.Services;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import pt.upskill.webapi.StandMngmt.DTOs.CarDTO;
 import pt.upskill.webapi.StandMngmt.Enums.Status;
 import pt.upskill.webapi.StandMngmt.Models.Brand;
 import pt.upskill.webapi.StandMngmt.Models.Car;
@@ -23,7 +27,13 @@ public class CarService {
         return carRepository.findAll();
     }
 
+    public Page<CarDTO> getCars(int page, int size, String sort) {
+        return  this.carRepository.findAll(PageRequest.of(page,size, Sort.by(sort))).map(CarDTO::toCarDTO) ;
+    }
 
+    public CarDTO getCar(Long id) {
+        return this.carRepository.findById(id).map(CarDTO::toCarDTO).orElse(null);
+    }
 
     public Car getCarById(long VIM) {
         return carRepository.findById(VIM).orElse(null);

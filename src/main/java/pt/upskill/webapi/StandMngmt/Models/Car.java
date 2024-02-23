@@ -3,25 +3,24 @@ package pt.upskill.webapi.StandMngmt.Models;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import pt.upskill.webapi.StandMngmt.Enums.Status;
+import pt.upskill.webapi.StandMngmt.Enums.Type;
+
+import java.util.Date;
 
 @Entity
 public class Car {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String VIM;
 
-    private long VIM;
+    @Id
+    private int TransactionID;
 
-    private double Price;
+    @Id
+    private int BuyerID;
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//
-//    private int IdClient;
-//
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//
-//    private long Id2;
+    private double buyingPrice;
+    private double sellingPrice;
+    private Date dateOfPurchase;
     @ManyToOne
     private Model model;
     @Nullable
@@ -33,8 +32,8 @@ public class Car {
     private String fuel;
 
     private String color;
-
-    private String Type;
+    @Enumerated(EnumType.STRING)
+    private Type type = Type.UNKNOWN;
 
     @ManyToOne
     private Seller seller;
@@ -47,10 +46,9 @@ public class Car {
     public Car() {
     }
 
-    public long getVIM() {
+    public String getVIM() {
         return VIM;
     }
-
 
     public Model getModel() {
         return model;
@@ -81,10 +79,9 @@ public class Car {
         return status;
     }
 
-    public String getType() {
-        return Type;
+    public Type getType() {
+        return type;
     }
-
 
     public int getNumberOfDoors() {
         return numberOfDoors;
@@ -94,15 +91,29 @@ public class Car {
         return seller;
     }
 
-    public double getPrice() {
-        return Price;
+    public double getBuyingPrice() {
+        return buyingPrice;
     }
 
-    public void setVIM(long VIM) {
+    public double getSellingPrice() {
+        return sellingPrice;
+    }
+
+    public int getTransactionID() {
+        return TransactionID;
+    }
+
+    public int getBuyerID() {
+        return BuyerID;
+    }
+
+    public Date getDateOfPurchase() {
+        return dateOfPurchase;
+    }
+
+    public void setVIM(String VIM) {
         this.VIM = VIM;
     }
-
-
 
     public void setModel(Model model) {
         this.model = model;
@@ -132,11 +143,9 @@ public class Car {
         this.status = status;
     }
 
-    public void setType(String type) {
-        Type = type;
+    public void setType(Type type) {
+        this.type = type;
     }
-
-
 
     public void setNumberOfDoors(int numberOfDoors) {
         this.numberOfDoors = numberOfDoors;
@@ -146,8 +155,24 @@ public class Car {
         this.seller = seller;
     }
 
-    public void setPrice(double price) {
-        Price = price;
+    public void setBuyingPrice(double buyingPrice) {
+        this.buyingPrice = buyingPrice;
+    }
+
+    public void setSellingPrice(double sellingPrice) {
+        this.sellingPrice = sellingPrice;
+    }
+
+    public void setTransactionID(int transactionID) {
+        TransactionID = transactionID;
+    }
+
+    public void setBuyerID(int buyerID) {
+        BuyerID = buyerID;
+    }
+
+    public void setDateOfPurchase(Date dateOfPurchase) {
+        this.dateOfPurchase = dateOfPurchase;
     }
 }
 

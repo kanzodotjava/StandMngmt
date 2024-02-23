@@ -11,6 +11,8 @@ public class Car {
 
     private long VIM;
 
+    private double Price;
+
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //
@@ -92,6 +94,10 @@ public class Car {
         return seller;
     }
 
+    public double getPrice() {
+        return Price;
+    }
+
     public void setVIM(long VIM) {
         this.VIM = VIM;
     }
@@ -138,6 +144,10 @@ public class Car {
 
     public void setSeller(Seller seller) {
         this.seller = seller;
+    }
+
+    public void setPrice(double price) {
+        Price = price;
     }
 }
 

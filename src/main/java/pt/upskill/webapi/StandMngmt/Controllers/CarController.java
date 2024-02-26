@@ -15,7 +15,6 @@ import pt.upskill.webapi.StandMngmt.Models.Car;
 import pt.upskill.webapi.StandMngmt.Services.CarService;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -53,7 +52,7 @@ public class CarController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<Car>> getCarById(@PathVariable long id) {
+    public ResponseEntity<EntityModel<Car>> getCarById(@PathVariable String id) {
         Car car = carService.getCarById(id);
         if (car == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -75,19 +74,19 @@ public class CarController {
 
 
     @PutMapping("{id}")
-    public ResponseEntity<Car> updateCar(@PathVariable long id, @RequestBody Car car) {
+    public ResponseEntity<Car> updateCar(@PathVariable String id, @RequestBody Car car) {
         Car updatedCar = carService.updateCar(id, car);
         return new ResponseEntity<>(updatedCar, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCar(@PathVariable long id) {
+    public ResponseEntity<String> deleteCar(@PathVariable String id) {
         carService.deleteCar(id);
         return new ResponseEntity<>("Car deleted successfully", HttpStatus.OK);
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<Car> changeCarStatus(@PathVariable long id, @RequestBody Status status) {
+    public ResponseEntity<Car> changeCarStatus(@PathVariable String id, @RequestBody Status status) {
         Car updatedCar = carService.changeCarStatus(id, status);
         return new ResponseEntity<>(updatedCar, HttpStatus.OK);
     }
@@ -106,5 +105,32 @@ public class CarController {
         List<Car> availableCars = carService.getAllAvailableCars();
         return new ResponseEntity<>(availableCars, HttpStatus.OK);
     }
+
+    @PutMapping("/{id}/sold/{sellingPrice}")
+    public ResponseEntity<Car> changeCarStatusToSold(@PathVariable String id, @PathVariable double sellingPrice) {
+        Car updatedCar = carService.changeCarStatusToSold(id,sellingPrice);
+        return new ResponseEntity<>(updatedCar, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/date")
+    public ResponseEntity<Car> updateDateOfPurchase(@PathVariable String id, @RequestBody Date date) {
+        Car updatedCar = carService.updateDateOfPurchase(id, date);
+        return new ResponseEntity<>(updatedCar, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/{transactionId}")
+    public ResponseEntity<Car> updateTransactionId(@PathVariable String id, @PathVariable int transactionId) {
+        Car updatedCar = carService.updateTransactionId(id, transactionId);
+        return new ResponseEntity<>(updatedCar, HttpStatus.OK);
+    }
+
+    @PutMapping("/transaction/{id}/{buyerid}")
+    public ResponseEntity<Car> updateBuyerId(@PathVariable String id, @PathVariable int buyerid) {
+        Car updatedCar = carService.updateBuyerId(id, buyerid);
+        return new ResponseEntity<>(updatedCar, HttpStatus.OK);
+    }
+
+
+
 
 }

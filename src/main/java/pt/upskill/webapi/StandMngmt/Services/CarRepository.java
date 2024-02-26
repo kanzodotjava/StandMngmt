@@ -8,7 +8,7 @@ import pt.upskill.webapi.StandMngmt.Models.Car;
 import java.util.List;
 
 @Repository
-public interface CarRepository extends JpaRepository<Car, Long> {
+public interface CarRepository extends JpaRepository<Car, String> {
 
     int countByStatus(Status status);
 

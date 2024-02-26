@@ -12,6 +12,7 @@ import pt.upskill.webapi.StandMngmt.Models.Brand;
 import pt.upskill.webapi.StandMngmt.Models.Car;
 import pt.upskill.webapi.StandMngmt.Models.Model;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,22 +32,27 @@ public class CarService {
         return  this.carRepository.findAll(PageRequest.of(page,size, Sort.by(sort))).map(CarDTO::toCarDTO) ;
     }
 
-    public CarDTO getCar(Long id) {
+    public CarDTO getCar(String id) {
         return this.carRepository.findById(id).map(CarDTO::toCarDTO).orElse(null);
     }
 
-    public Car getCarById(long VIM) {
+    public Car getCarById(String VIM) {
         return carRepository.findById(VIM).orElse(null);
     }
 
 
+    //createCar but if it has same VIM throw error
     public Car createCar(Car car) {
+        if (carRepository.existsById(car.getVIM())) {
+            throw new IllegalArgumentException("Car with the same VIM already exists");
+        }
         Optional<Model> modelOptional = modelRepository.findById(car.getModel().getId());
         car.setModel(modelOptional.get());
         return carRepository.save(car);
     }
 
-    public Car updateCar(long VIM, Car updatedCar) {
+
+    public Car updateCar(String VIM, Car updatedCar) {
         Car car = carRepository.findById(VIM).orElse(null);
         if (car != null) {
             if (updatedCar.getModel() != null) {
@@ -79,16 +85,37 @@ public class CarService {
             if (updatedCar.getSeller() != null) {
                 car.setSeller(updatedCar.getSeller());
             }
+            if (updatedCar.getDateOfPurchase() != null) {
+                car.setDateOfPurchase(updatedCar.getDateOfPurchase());
+            }
+            if (updatedCar.getBuyingPrice() != 0) {
+                car.setBuyingPrice(updatedCar.getBuyingPrice());
+            }
+            if (updatedCar.getSellingPrice() != 0) {
+                car.setSellingPrice(updatedCar.getSellingPrice());
+            }
+            if (updatedCar.getVIM() != null) {
+                car.setVIM(updatedCar.getVIM());
+            }
+            if (updatedCar.getTransactionID() != 0) {
+                car.setTransactionID(updatedCar.getTransactionID());
+            }
+            if (updatedCar.getBuyerID() != 0) {
+                car.setBuyerID(updatedCar.getBuyerID());
+            }
+            if (updatedCar.getKilometers() != 0) {
+                car.setKilometers(updatedCar.getKilometers());
+            }
             return carRepository.save(car);
         }
         return null;
     }
 
-    public void deleteCar(long id) {
+    public void deleteCar(String id) {
         carRepository.deleteById(id);
     }
 
-    public Car changeCarStatus(long id, Status status) {
+    public Car changeCarStatus(String id, Status status) {
         Car car = carRepository.findById(id).orElse(null);
         if (car != null) {
             car.setStatus(status);
@@ -103,5 +130,42 @@ public class CarService {
 
     public List<Car> getAllAvailableCars() {
         return carRepository.findByStatus(Status.AVAILABLE);
+    }
+
+    public Car changeCarStatusToSold(String id, double sellingPrice) {
+        Car car = carRepository.findById(id).orElse(null);
+        if (car != null) {
+            car.setStatus(Status.SOLD);
+            car.setSellingPrice(sellingPrice);
+            return carRepository.save(car);
+        }
+        return null;
+    }
+
+    public Car updateDateOfPurchase(String id, Date date) {
+        Car car = carRepository.findById(id).orElse(null);
+        if (car != null) {
+            car.setDateOfPurchase(date);
+            return carRepository.save(car);
+        }
+        return null;
+    }
+
+    public Car updateTransactionId(String id, int transactionId) {
+        Car car = carRepository.findById(id).orElse(null);
+        if (car != null) {
+            car.setTransactionID((transactionId));
+            return carRepository.save(car);
+        }
+        return null;
+    }
+
+    public Car updateBuyerId(String id, int buyerid) {
+        Car car = carRepository.findById(id).orElse(null);
+        if (car != null) {
+            car.setBuyerID(buyerid);
+            return carRepository.save(car);
+        }
+        return null;
     }
 }

@@ -12,10 +12,8 @@ public class Car {
     @Id
     private String VIM;
 
-    @Id
     private int TransactionID;
 
-    @Id
     private int BuyerID;
 
     private double buyingPrice;
@@ -43,11 +41,17 @@ public class Car {
     @Enumerated(EnumType.STRING)
     private Status status = Status.UNKNOWN;
 
+    private double kilometers;
+
     public Car() {
     }
 
     public String getVIM() {
         return VIM;
+    }
+
+    public double getKilometers() {
+        return kilometers;
     }
 
     public Model getModel() {
@@ -173,6 +177,10 @@ public class Car {
 
     public void setDateOfPurchase(Date dateOfPurchase) {
         this.dateOfPurchase = dateOfPurchase;
+    }
+
+    public void setKilometers(double kilometers) {
+        this.kilometers = kilometers;
     }
 }
 
